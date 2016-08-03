@@ -11,17 +11,18 @@ Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=3
 Guten Tag Community!
 
 Bei diesem Projekt handelt es sich um ein Jump N' Run 2D Spiel.
+___
 
-Geplant ist:
+**Geplant ist:**
 
 - einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
 - ein funktionierendes kleines Spiel zu entwickeln
 - viele neue Erfahrungen zu gewinnen 
 - gemeinsam mit der Community aus dem python-forum.de spaß zu haben
 
-Bisher haben wir eine grobe Richtung für das Projekt.
+___
 
-Das Spiel sollte folgende Eigenschaften haben:
+**Das Spiel sollte folgende Eigenschaften haben:**
 - lokal auf dem Rechner ausgeführt werden können. (Vielleicht mittels py2exe?) 
 - Levelabschnitte wiederholen sich, damit man nicht so viele Levels erstellen muss
 - 1-2 Items (Höher springen, schneller laufen) 
