@@ -1,8 +1,10 @@
 # Jump-N-Run-pydesw
-Projekt der Community aus: www.python-forum.de Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 
+Projekt der Community aus: www.python-forum.de 
 
-Programmiersprache der Wahl: Python 3.4
-GUI Framework: pygame 1.9.2
+Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 
+
+- Programmiersprache der Wahl: Python 3.4
+- GUI Framework: pygame 1.9.2
 
 Guten Tag Community!
 
