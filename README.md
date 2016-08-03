@@ -1,5 +1,7 @@
 # Jump-N-Run-pydesw
-Projekt der Community aus: www.python-forum.de Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 Programmiersprache der Wahl: Python 3.4
+Projekt der Community aus: www.python-forum.de Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 
+
+Programmiersprache der Wahl: Python 3.4
 GUI Framework: pygame 1.9.2
 
 Guten Tag Community!
@@ -8,10 +10,10 @@ Bei diesem Projekt handelt es sich um ein Jump N' Run 2D Spiel.
 
 Geplant ist:
 
-* einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
-* ein funktionierendes kleines Spiel zu entwickeln
-* viele neue Erfahrungen zu gewinnen 
-* gemeinsam mit der Community aus dem python-forum.de spaß zu haben
+- einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
+- ein funktionierendes kleines Spiel zu entwickeln
+- viele neue Erfahrungen zu gewinnen 
+- gemeinsam mit der Community aus dem python-forum.de spaß zu haben
 
 Bisher haben wir eine grobe Richtung für das Projekt.
 
