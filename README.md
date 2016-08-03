@@ -8,10 +8,10 @@ Bei diesem Projekt handelt es sich um ein Jump N' Run 2D Spiel.
 
 Geplant ist:
 
-        * einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
-        * ein funktionierendes kleines Spiel zu entwickeln
-        * viele neue Erfahrungen zu gewinnen 
-        * gemeinsam mit der Community aus dem python-forum.de spaß zu haben
+* einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
+* ein funktionierendes kleines Spiel zu entwickeln
+* viele neue Erfahrungen zu gewinnen 
+* gemeinsam mit der Community aus dem python-forum.de spaß zu haben
 
 Bisher haben wir eine grobe Richtung für das Projekt.
 
