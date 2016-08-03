@@ -33,7 +33,8 @@ ___
 **Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen.** 
 
 
-Links:
+**Links:**
+
     Quellcode: Springen einer Spielfigur ermöglichen (Physik)
        https://pythonspot.com/en/jump-and-run-in-pygame/
     Quellcode: Beispiel eines anderen kleinen Jump N' Run Spieles
