@@ -23,13 +23,14 @@ ___
 ___
 
 **Das Spiel sollte folgende Eigenschaften haben:**
-- lokal auf dem Rechner ausgeführt werden können. (Vielleicht mittels py2exe?) 
+- lokal auf dem Rechner ausgeführbar (Vielleicht mittels py2exe?) 
 - Levelabschnitte wiederholen sich, damit man nicht so viele Levels erstellen muss
 - 1-2 Items (Höher springen, schneller laufen) 
 - 1-2 Gegner (Links-Rechts Bewegung, Bewegung zum Spieler)
 - später vielleicht ein funktionierender Multiplayer
+___
 
-Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen. 
+**Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen.** 
 
 
 Links:
