@@ -1,19 +1,22 @@
 # Jump-N-Run-pydesw
-Projekt der Community aus: www.python-forum.de Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 Programmiersprache der Wahl: Python
+Das ist ein Community-Projekt des [deutschen Python-Forums](www.python-forum.de). Mehr Infos zu den Projekten findet ihr unten bei den Links.
 
-Guten Tag Community!
+###Tools
+Programmiersprache: python3.4  
+GUI Framework: pygame1.9.2
 
-Bei diesem Projekt handelt es sich um ein Jump N' Run 2D Spiel.
-
-Geplant ist:
-
-        * einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
-        * ein funktionierendes kleines Spiel zu entwickeln
-        * viele neue Erfahrungen zu gewinnen 
-        * gemeinsam mit der Community aus dem python-forum.de spaß zu haben
-
-Bisher haben wir eine grobe Richtung für das Projekt.
-
-Das Spiel sollte lokal auf dem Rechner ausgeführt werden können. (Vielleicht mittels py2exe?) Bisher in die Runde geworfene GUI-Frameworks wären: Pygame, Pyglet Damit nicht zu viele Grafiken und Level erstellt werden müssen setzen wir darauf, dass sich Levelabschnitte zufällig wiederholen. Demnach eine Art Endloslevel. Dazu 1-2 Items (Höher springen, schneller laufen) und eben 1-2 Gegner (Links-Rechts Bewegung, Bewegung zum Spieler) Ein weiteres Feature wäre ein funktionierender Multiplayer. Welches Framework dafür genutzt wird, steht aber noch aus.
+###Geplant ist
+* ein lokaler Client
+* ein Levelgenerator
+* Items wie z.B. speed booster, jump booster
+* (Multiplayer Modus) Status: ungeklärt
 
 Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen. 
+
+###Links:
+**Projekte**  
+[Thread zum Hauptprojekt](https://www.python-forum.de/viewtopic.php?f=6&t=38858)  
+[Thread zum Jump'n'Run-Projekt](https://www.python-forum.de/viewtopic.php?f=6&t=38858)  
+**Nützliches**  
+Quellcode: [Springen einer Spielfigur ermöglichen (Physik)](https://pythonspot.com/en/jump-and-run-in-pygame/)  
+Quellcode: [Beispiel eines anderen kleinen Jump N' Run Spieles](http://pygame.org/project-Piexel-2994-.html)
