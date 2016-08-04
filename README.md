@@ -1,19 +1,43 @@
 # Jump-N-Run-pydesw
-Projekt der Community aus: www.python-forum.de Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 Programmiersprache der Wahl: Python
+Projekt der Community aus: www.python-forum.de 
+
+Link zum Thread aus dem Forum: https://www.python-forum.de/viewtopic.php?f=6&t=38858 
+
+- Programmiersprache der Wahl: Python 3.4
+- GUI Framework: pygame 1.9.2
+
+
 
 Guten Tag Community!
 
 Bei diesem Projekt handelt es sich um ein Jump N' Run 2D Spiel.
+___
 
-Geplant ist:
+**Geplant ist:**
 
-        * einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
-        * ein funktionierendes kleines Spiel zu entwickeln
-        * viele neue Erfahrungen zu gewinnen 
-        * gemeinsam mit der Community aus dem python-forum.de spaß zu haben
+- einen Einblick in die ganzen Prozesse innerhalb eines Projektes zubekommen
+- ein funktionierendes kleines Spiel zu entwickeln
+- viele neue Erfahrungen zu gewinnen 
+- gemeinsam mit der Community aus dem python-forum.de spaß zu haben
 
-Bisher haben wir eine grobe Richtung für das Projekt.
+___
 
-Das Spiel sollte lokal auf dem Rechner ausgeführt werden können. (Vielleicht mittels py2exe?) Bisher in die Runde geworfene GUI-Frameworks wären: Pygame, Pyglet Damit nicht zu viele Grafiken und Level erstellt werden müssen setzen wir darauf, dass sich Levelabschnitte zufällig wiederholen. Demnach eine Art Endloslevel. Dazu 1-2 Items (Höher springen, schneller laufen) und eben 1-2 Gegner (Links-Rechts Bewegung, Bewegung zum Spieler) Ein weiteres Feature wäre ein funktionierender Multiplayer. Welches Framework dafür genutzt wird, steht aber noch aus.
+**Das Spiel sollte folgende Eigenschaften haben:**
+- lokal auf dem Rechner ausgeführbar (Vielleicht mittels py2exe?) 
+- Levelabschnitte wiederholen sich, damit man nicht so viele Levels erstellen muss
+- 1-2 Items (Höher springen, schneller laufen) 
+- 1-2 Gegner (Links-Rechts Bewegung, Bewegung zum Spieler)
+- später vielleicht ein funktionierender Multiplayer
+___
 
-Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen. 
+**Bisher ist nichts endgültig! Einige Features werden sicherlich verworfen und dafür andere hinzukommen.** 
+
+
+**Links:**
+
+Quellcode: Springen einer Spielfigur ermöglichen (Physik)
+  - https://pythonspot.com/en/jump-and-run-in-pygame/
+
+Quellcode: Beispiel eines anderen kleinen Jump N' Run Spieles
+  - http://pygame.org/project-Piexel-2994-.html
+
