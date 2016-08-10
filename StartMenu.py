@@ -6,93 +6,95 @@ import re
 import os
 
 
-class ConfigHandler(object):
-    ''' Klasse behandelt alle Konfigs die geladen / gespeichert / veraendert werden
+class Configurations(object):
+    ''' Klasse behandelt alle Konfigs die geladen / gespeichert / verändert werden
     '''
-    Configurations = dict()
 
-    @staticmethod
-    def set(filename="standard", *args):
+    anzahl_configurations = 0
+    def __init__(self):
+        self.configurations = dict()
+
+    def set(self, filename, selection, option, value):
         # setzt den jeweiligen Wert neu
-        config = ConfigHandler.Configurations[filename]    
-        if len(args) == 3:
-            value = json.loads(config.get(args[0], args[1]))
-            config.set(args[0], args[1], str(args[2]))
-            if value != args[2]:
-                ConfigHandler.save_file(filename)
-
-    @staticmethod
-    def load_dict(defaults, filename):
-        # Uebergebenes Dictionary muss immer zuerst eingelesen werden
-        # Konfig soll diese Standardwerte immer ueberschreiben
-        if filename not in ConfigHandler.Configurations:
-            ConfigHandler.Configurations[filename] = configparser.ConfigParser()
-            ConfigHandler.Configurations[filename].read_dict(defaults)
-            ConfigHandler.load_file(filename)
+        # Datei wird nur bei neuen Daten geschrieben
+        config = self.configurations[filename]    
+        value_old = json.loads(config.get(selection, option))
+        config.set(selection, option, str(value))
+        if value != value_old:
+            self.save_file(filename)
     
-    @staticmethod
-    def save_file(filename):
-        if filename != "standard":
-            with open(filename, 'w') as configfile:
-                ConfigHandler.Configurations[filename].write(configfile)
+    def save_file(self, filename):
+        with open(filename, 'w') as configfile:
+            self.configurations[filename].write(configfile)
 
-    @staticmethod
-    def load_file(filename):
+    def load_dict(self, defaults, filename):
+        # Uebergebenes Dictionary muss immer zuerst eingelesen werden
+        # Konfig soll diese Standardwerte immer überschreiben
+        if filename not in self.configurations:
+            Configurations.anzahl_configurations += 1
+            self.configurations[filename] = configparser.ConfigParser()
+            self.configurations[filename].read_dict(defaults)
+            self.load_file(filename)
+
+    def load_file(self, filename):
         # Datei einlesen mittels ConfigParser
-        if filename not in ConfigHandler.Configurations:
-            ConfigHandler.Configurations[filename] = configparser.ConfigParser()
-        if filename != "standard":
-            try:
-                with open(filename, 'r') as configfile:
-                    ConfigHandler.Configurations[filename].read_file(configfile)
-            except FileNotFoundError:
-                print("Datei existiert nicht, wenn Optionen geandert werden, wird diese geschrieben")
+        if filename not in self.configurations:
+            Configurations.anzahl_configurations += 1
+            self.configurations[filename] = configparser.ConfigParser()
+        try:
+            with open(filename, 'r') as configfile:
+                self.configurations[filename].read_file(configfile)
+        except FileNotFoundError:
+            print("Datei existiert nicht, wenn Optionen geandert werden, wird diese geschrieben")
 
-    @staticmethod
-    def get_options(filename, sections):
+    def get_options(self, filename, sections):
         ''' Example Usage
-            # (self.display, self.menu) = ConfigHandler.get_options(filename, ("display", "menu",))
+            # (self.display, self.menu) = self.get_options(filename, ("display", "menu",))
         '''
-        dict1 = dict()
+        data = dict()
 
-        ConfigHandler.load_file(filename)
-        config = ConfigHandler.Configurations[filename]
+        self.load_file(filename)
+        config = self.configurations[filename]
         for section in sections:
-            dict1[section] = dict()
+            data[section] = dict()
             try: 
                 options = config.options(section)
                 for option in options:
                     value = str(re.sub("'","\"",config.get(section, option)))
                     try:
-                        dict1[section][option] = json.loads(value)
+                        data[section][option] = json.loads(value)
                     except ValueError:
-                        # Fehler tritt auf, weil in value kein valider Syntax fuer json ist
-                        dict1[section][option] = config.get(section, option)
+                        # Fehler tritt auf, weil in value kein valider Syntax für json ist
+                        data[section][option] = config.get(section, option)
 
             except configparser.NoSectionError:
                 print("Auswahl nicht vorhanden: %s" % section)
         
         # falls nur ein Abschnitt geholt werden muss
-        if len(sections) == 1: return dict1[sections[0]]
-        else: return [dict1[x] for x in sections]
+        if len(sections) == 1:
+            return data[sections[0]]
+        else:
+            return [data[x] for x in sections]
   
 class Game(object):
-    def __init__(self, filename):
-        self.exit_option = False
+    def __init__(self, configurations, filename):
+        self.configurations = configurations
         self.game_display = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.filename = filename
-        self.load_settings()
+        self.setup_game()
     
-    def load_settings(self):
-        self.figurs = pygame.sprite.Group()
-        self.display, self.colors = ConfigHandler.get_options(self.filename, ("display", "colors"))
-        self.player = Figur(self.figurs)
+    def setup_game(self):
+        self.exit = False
+        self.choosed_option = ""
+        self.figures = pygame.sprite.Group()
+        self.display, self.colors = self.configurations.get_options(self.filename, ("display", "colors"))
+        self.player = Figure(self.figures)
 
     def loop(self):
-        self.load_settings()
-        while not self.exit_option:
-
+        pygame.event.clear()
+        self.setup_game()
+        while not self.exit:
             if pygame.key.get_pressed()[pygame.K_LEFT] != 0 :
                 self.player.left()
             if pygame.key.get_pressed()[pygame.K_RIGHT] != 0 :
@@ -102,29 +104,28 @@ class Game(object):
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_ESCAPE:
-                        self.exit_option = "menu"
+                        self.choosed_option = "menu"
+                        self.exit = True
                 if event.type == pygame.QUIT:
-                    self.exit_option = "menu"
+                    self.choosed_option = "menu"
+                    self.exit = True
                     
             self.game_display.fill((192,0,0))
             self.show_fps()
 
-            self.figurs.draw(self.game_display)
+            self.figures.draw(self.game_display)
 
             pygame.display.update()
             self.clock.tick(self.display["fps"])
         
-        temp = self.exit_option
-        self.exit_option = False
-        return temp
+        return self.choosed_option
     
     def show_fps(self):
         fps = self.clock.get_fps()
-        font = pygame.font.Font('freesansbold.ttf',85)
-        self.game_display.blit(font.render("fps: %i" % fps, 1, self.colors["white"]), (0,0))
-        # pass
+        font = pygame.font.Font('freesansbold.ttf', 85)
+        self.game_display.blit(font.render("fps: %i" % fps, 1, self.colors["white"]), (0, 0))
       
-class Figur(pygame.sprite.Sprite):
+class Figure(pygame.sprite.Sprite):
     ''' Erstellt ein pygame.image mit Text 
     '''
     def __init__(self, blocks_group, color=(255,224,224)):
@@ -132,86 +133,79 @@ class Figur(pygame.sprite.Sprite):
         self.image = pygame.Surface([48, 48])
         self.image.fill(color)
         self.rect = self.image.get_rect()
-        self.rect[0] = 200
-        self.rect[1] = 300
+        self.rect.left = 200
+        self.rect.top = 300
     
     def left(self):
-        display = pygame.display.get_surface()
-        rect = display.get_rect()
-        if self.rect[0] > 0:
-            self.rect[0] -= 3
+        if self.rect.left > 0:
+            self.rect.left -= 3
     
     def right(self):
         display = pygame.display.get_surface()
         rect = display.get_rect()
-        print(rect)
-        if self.rect[0] < rect[2]:
-            self.rect[0] += 3
+        if self.rect.right < rect.right:
+            self.rect.left += 3
         
 class Block(pygame.sprite.Sprite):
     ''' Erstellt ein pygame.image mit Text 
     '''
-    def __init__(self, name, element_nummer, blocks_group, msg=""):
+    def __init__(self, name, element_number, blocks_group, message=""):
         pygame.sprite.Sprite.__init__(self, blocks_group)
         self.function_name = name
         self.name = name
-        self.special_msg = msg
-        self.largeText = pygame.font.Font('freesansbold.ttf',85)
-        self.height = element_nummer
+        self.special_message = message
+        self.largeText = pygame.font.Font('freesansbold.ttf', 85)
+        self.height = element_number
         self.normal()
 
-    def text_objects(self, text, font, color=(0,0,0)):
+    def create_text_surface(self, text, font, color=(0, 0, 0)):
         textSurface = font.render( text.capitalize(), True, color)
         return textSurface, textSurface.get_rect()
  
-    def get_rect(self):
-        return self.rect
-    
     def normal(self):
-        name = "%s %s" % (self.name, self.special_msg)
-        self.image, self.rect = self.text_objects(name, self.largeText)
-        self.rect[0] = 100
-        self.rect[1] = 90 * self.height
+        # erzeugt einen Text mit schwarzer Schriftfarbe
+        name = "%s %s" % (self.name, self.special_message)
+        self.image, self.rect = self.create_text_surface(name, self.largeText)
+        self.rect.left = 100
+        self.rect.top = 90 * self.height
         
     def hover(self):
-        name = "%s %s" % (self.name, self.special_msg)
-        self.image, self.rect = self.text_objects(name, self.largeText, (32, 128, 224))
-        self.rect[0] = 100
-        self.rect[1] = 90 * self.height
-
-    def get_fkt(self):
-        return self.function_name
+        # erzeugt einen Text mit blauer Schriftfarbe - eine Art Highlighting weil es durch Mouseover erzeugt wird
+        name = "%s %s" % (self.name, self.special_message)
+        self.image, self.rect = self.create_text_surface(name, self.largeText, (32, 128, 224))
+        self.rect.left = 100
+        self.rect.top = 90 * self.height
 
 class Menu(object):
-    def __init__(self, filename="standard"):
+    def __init__(self, configurations, filename="standard.cfg"):
+        self.configurations = configurations
         self.filename = filename
-        self.packed_functions = {"quit": self.quit}
-        self.load_settings()
-        
-        self.game_display = pygame.display.set_mode((self.display["width"], self.display["height"]))
         self.clock = pygame.time.Clock()
-        self.exit_option = False
+        self.packed_functions = {"quit": self.quit}
+        self.configurations.load_dict(self.load_standard_configuration(), self.filename)
+        self.setup_settings()
         
+    def setup_settings(self):
+        # alle notwendigen Variablen setzen / resetten und das Menu laden
+        self.choosed_option = ""
+        self.exit = False
+        self.display, self.colors = self.configurations.get_options(self.filename, ("display", "colors"))
+        self.game_display = pygame.display.set_mode((self.display["width"], self.display["height"]))
         self.load_menu()
-    
-    def load_settings(self):
-        # laedt die fuer das Menu hinterlegten Settings (Aufloesung, Menupunkte etc.)
-        ConfigHandler.load_dict(self.load_std_cfg(), self.filename)
-        self.display, self.colors = ConfigHandler.get_options(self.filename, ("display", "colors"))
 
-    def load_std_cfg(self):
+    def load_standard_configuration(self):
         # Platzhalter - Hook
         options = { 
             "display" : {"width": 640, "height": 480, "fps": 30},
             "info": {"title": "menu", "order_menu": ["quit"]},
-            "colors": {"black": [0,0,0], "white": [255,255,255]},
+            "colors": {"black": [0, 0, 0], "white": [255, 255, 255]},
             "menu": {"quit": "quit"}
         }
         return options
 
     def load_menu(self):
         self.blocks = pygame.sprite.Group()
-        info = ConfigHandler.get_options(self.filename, ("info",))
+        info = self.configurations.get_options(self.filename, ("info",))
         pygame.display.set_caption(info["title"])
         if len(info["order_menu"]) == 1:
             Block(info["order_menu"][0], 1, self.blocks)
@@ -220,62 +214,59 @@ class Menu(object):
                 Block(point, nr+1, self.blocks)
     
     def loop(self):
-        self.load_settings()
         pygame.event.clear()
-        while not self.exit_option:
+        self.setup_settings()
+        while not self.exit:
             # event = pygame.event.wait()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEMOTION:
-                    for (block, coordinates) in [ (block, block.get_rect()) for block in self.blocks ]:
+                    for (block, coordinates) in [ (block, block.rect) for block in self.blocks ]:
                         if coordinates.collidepoint(pygame.mouse.get_pos()): block.hover()
                         else: block.normal()
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    for (function_name, coordinates) in [ (block.get_fkt(), block.get_rect()) for block in self.blocks ]:
+                    for (function_name, coordinates) in [ (block.function_name, block.rect) for block in self.blocks ]:
                         if coordinates.collidepoint(pygame.mouse.get_pos()):
                             try: self.packed_functions[function_name]()
                             except KeyError:
                                 print("Hinterlegte Funktion existiert nicht!")
                     
-           
             self.game_display.fill(self.colors["white"])
-            for element in self.blocks:
-                self.game_display.blit(element.image, element.rect.topleft)
+            self.blocks.draw(self.game_display)
             pygame.display.update()
             
             self.clock.tick(self.display["fps"])
 
-        temp = self.exit_option
-        self.exit_option = False
-        return temp
+        return self.choosed_option
 
     def quit(self):
         # schließt das Menu
-        self.exit_option = "quit"
+        self.exit = True
 
 class StartMenu(Menu):
-    def __init__(self, filename=""):
-        # self.load_std_cfg()
-        Menu.__init__(self, filename)
+    def __init__(self, configurations, filename="standard.cfg"):
+        self.configurations = configurations
+        # self.load_standard_configuration()
+        Menu.__init__(self, configurations, filename)
         self.packed_functions ={"start": self.start_game, "options": self.show_options, "quit": self.quit,
                                 "multiplayer": self.multiplayer, "fps": self.change_fps, "size": self.change_size,
                                 "zurueck": self.backward}
         self.filename = filename
         self.depth = ["menu"]
-    
+       
     def load_options(self):
         self.blocks = pygame.sprite.Group()
-        (info, options) = ConfigHandler.get_options(self.filename, ("info", "options"))
+        (info, options) = self.configurations.get_options(self.filename, ("info", "options"))
         pygame.display.set_caption("Optionen")
         for nr, point in enumerate(info["order_options"]):
-            msg = ""
+            message = ""
             if point in options:
                 if point == "fps":
-                    msg = "%i" % self.display["fps"]
+                    message = "%i" % self.display["fps"]
                 elif point == "size":
-                    msg = "%sx%s" % (self.display["width"], self.display["height"])
-            Block(point, nr+1, self.blocks, str(msg))
+                    message = "%sx%s" % (self.display["width"], self.display["height"])
+            Block(point, nr+1, self.blocks, str(message))
 
-    def load_std_cfg(self):
+    def load_standard_configuration(self):
         # Standardwerte des Menus
         options = { 
                     "display" : {"width": 800, "height": 600, "fps": 60},
@@ -290,35 +281,36 @@ class StartMenu(Menu):
         print("Multiplayer Part")
 
     def start_game(self):
-        self.exit_option = "game"
+        self.choosed_option = "game"
+        self.exit = True
     
     def show_options(self):
-        # laedt das Menu fuer die Optionen
+        # lädt das Menu für die Optionen
         self.depth.append("options")
         self.load_options()
     
     def change_fps(self):
-        # aendert die FPS anhand der hinterlegten Optionen
-        options = ConfigHandler.get_options(self.filename, ("options",))
+        # ändert die FPS anhand der hinterlegten Optionen
+        options = self.configurations.get_options(self.filename, ("options",))
         nummer = options["fps"].index(self.display["fps"])
-        if len(options["fps"])-1 == nummer: msg = options["fps"][0]
-        else: msg = options["fps"][nummer+1]
-        self.display["fps"] = msg
-        ConfigHandler.set(self.filename, "display", "fps", msg)
+        if len(options["fps"])-1 == nummer: message = options["fps"][0]
+        else: message = options["fps"][nummer+1]
+        self.display["fps"] = message
+        self.configurations.set(self.filename, "display", "fps", message)
         self.load_options()
     
     def change_size(self):
-        # aendert die Groesse des Fensters anhand der hinterlegten Optionen
-        options = ConfigHandler.get_options(self.filename, ("options",))
-        msg = "%sx%s" % (self.display["width"], self.display["height"])
-        nummer = options["size"].index(msg)
-        if len(options["size"])-1 == nummer: msg = options["size"][0]
-        else: msg = options["size"][nummer+1]
-        (width, height) = msg.split("x")
+        # ändert die Grösse des Fensters anhand der hinterlegten Optionen
+        options = self.configurations.get_options(self.filename, ("options",))
+        message = "%sx%s" % (self.display["width"], self.display["height"])
+        nummer = options["size"].index(message)
+        if len(options["size"])-1 == nummer: message = options["size"][0]
+        else: message = options["size"][nummer+1]
+        (width, height) = message.split("x")
         self.display["width"] = int(width)
         self.display["height"] = int(height)
-        ConfigHandler.set(self.filename, "display", "width", self.display["width"])
-        ConfigHandler.set(self.filename, "display", "height", self.display["height"])
+        self.configurations.set(self.filename, "display", "width", self.display["width"])
+        self.configurations.set(self.filename, "display", "height", self.display["height"])
 
         self.game_display = pygame.display.set_mode((self.display["width"], self.display["height"]))
         self.load_options()
@@ -334,11 +326,12 @@ def main():
     pygame.init()
 
     pfad = os.path.dirname(os.path.realpath(__file__))
-    cfg = "%s\\menu.cfg" % pfad
-    spielmenu = StartMenu(cfg)
-    spiel = Game(cfg)
+    configuration_filename = "%s\\menu.cfg" % pfad
+    configuration = Configurations()
+    spielmenu = StartMenu(configuration, configuration_filename)
+    spiel = Game(configuration, configuration_filename)
 
-    # meoglichkeit zwischen menu und spiel zuwechseln
+    # möglichkeit zwischen menu und spiel zuwechseln
     option = "menu"
     while True:
         if "menu" == option:
